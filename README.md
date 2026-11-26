@@ -7,11 +7,11 @@ A read-only market dashboard for studying Deriv tick data and directional moment
 1. Install Node.js 20 or later.
 2. Run `npm install`.
 3. Run `npm run dev`.
-4. Enter your Deriv application ID and connect to the public tick feed.
+4. Configure `VITE_DERIV_APP_ID` and connect to the public tick feed.
 
 The application ID is used to establish a market-data WebSocket connection. Do not enter an account token or password. Register an app through Deriv's developer portal if you do not already have an application ID.
 
-To provide the application ID through the environment, copy `.env.example` to `.env.local` and set `VITE_DERIV_APP_ID`. The value remains visible to browser users because Vite exposes `VITE_` variables in the client bundle; it is not secret and should not be used as an account credential. When it is configured, the dashboard shows an environment-configured status instead of asking for the ID.
+To provide the application ID through the environment, copy `.env.example` to `.env.local` and set `VITE_DERIV_APP_ID`. The value remains visible to browser users because Vite exposes `VITE_` variables in the client bundle; it is not secret and should not be used as an account credential. The dashboard does not accept manual App ID entry.
 
 ## Included
 

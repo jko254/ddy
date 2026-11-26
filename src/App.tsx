@@ -45,14 +45,15 @@ const CANDLE_INTERVALS: { value: CandleGranularity; label: string }[] = [
 const ENVIRONMENT_APP_ID = import.meta.env.VITE_DERIV_APP_ID?.trim() ?? "";
 
 function App() {
-  const [appId, setAppId] = useState(() => ENVIRONMENT_APP_ID);
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
   const [symbols, setSymbols] = useState<ActiveSymbol[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState("");
   const [ticks, setTicks] = useState<PriceTick[]>([]);
   const [candles, setCandles] = useState<PriceCandle[]>([]);
   const [granularity, setGranularity] = useState<CandleGranularity>(60);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(
+    ENVIRONMENT_APP_ID ? "" : "VITE_DERIV_APP_ID is not configured.",
+  );
   const socketRef = useRef<WebSocket | null>(null);
   const subscriptionsRef = useRef<{ ticks: string | null; candles: string | null }>({
     ticks: null,
@@ -124,13 +125,8 @@ function App() {
   };
 
   const connect = () => {
-    const normalizedAppId = appId.trim();
-    if (!normalizedAppId) {
-      setError("Enter your Deriv application ID to connect to public ticks.");
-      return;
-    }
-    if (!/^\d+$/.test(normalizedAppId)) {
-      setError("The application ID should contain digits only.");
+    if (!ENVIRONMENT_APP_ID) {
+      setError("VITE_DERIV_APP_ID is not configured.");
       return;
     }
 
@@ -142,7 +138,7 @@ function App() {
     setStatus("connecting");
 
     const socket = new WebSocket(
-      `${API_URL}?app_id=${encodeURIComponent(normalizedAppId)}&l=en&brand=deriv`,
+      `${API_URL}?app_id=${encodeURIComponent(ENVIRONMENT_APP_ID)}&l=en&brand=deriv`,
     );
     socketRef.current = socket;
 
@@ -317,26 +313,11 @@ function App() {
             <p>
               {ENVIRONMENT_APP_ID
                 ? "Select a market and connect to live data."
-                : "Enter an app ID to load available symbols and live ticks."}
+                : "Configure VITE_DERIV_APP_ID to enable live data."}
             </p>
           </div>
         </div>
         <div className="controls">
-          {!ENVIRONMENT_APP_ID && (
-            <label className="field app-id-field">
-              <span>DERIV APP ID</span>
-              <input
-                type="text"
-                inputMode="numeric"
-                autoComplete="off"
-                value={appId}
-                onChange={(event) => setAppId(event.target.value)}
-                placeholder="Enter application ID"
-                aria-label="Deriv application ID"
-                disabled={status !== "disconnected"}
-              />
-            </label>
-          )}
           <label className="field symbol-field">
             <span>MARKET SYMBOL</span>
             <select
@@ -354,7 +335,11 @@ function App() {
             </select>
           </label>
           {status === "disconnected" ? (
-            <button className="button button-primary" onClick={connect}>
+            <button
+              className="button button-primary"
+              onClick={connect}
+              disabled={!ENVIRONMENT_APP_ID}
+            >
               Connect <span aria-hidden="true">→</span>
             </button>
           ) : (
