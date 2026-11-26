@@ -42,7 +42,7 @@ const CANDLE_INTERVALS: { value: CandleGranularity; label: string }[] = [
   { value: 300, label: "5 minutes" },
   { value: 900, label: "15 minutes" },
 ];
-const ENVIRONMENT_APP_ID = import.meta.env.VITE_DERIV_APP_ID?.trim() ?? "";
+const PUBLIC_APP_ID = "1089";
 
 function App() {
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
@@ -51,9 +51,7 @@ function App() {
   const [ticks, setTicks] = useState<PriceTick[]>([]);
   const [candles, setCandles] = useState<PriceCandle[]>([]);
   const [granularity, setGranularity] = useState<CandleGranularity>(60);
-  const [error, setError] = useState(
-    ENVIRONMENT_APP_ID ? "" : "VITE_DERIV_APP_ID is not configured.",
-  );
+  const [error, setError] = useState("");
   const socketRef = useRef<WebSocket | null>(null);
   const subscriptionsRef = useRef<{ ticks: string | null; candles: string | null }>({
     ticks: null,
@@ -125,11 +123,6 @@ function App() {
   };
 
   const connect = () => {
-    if (!ENVIRONMENT_APP_ID) {
-      setError("VITE_DERIV_APP_ID is not configured.");
-      return;
-    }
-
     closeSocket();
     setError("");
     setSymbols([]);
@@ -138,7 +131,7 @@ function App() {
     setStatus("connecting");
 
     const socket = new WebSocket(
-      `${API_URL}?app_id=${encodeURIComponent(ENVIRONMENT_APP_ID)}&l=en&brand=deriv`,
+      `${API_URL}?app_id=${encodeURIComponent(PUBLIC_APP_ID)}&l=en&brand=deriv`,
     );
     socketRef.current = socket;
 
@@ -239,7 +232,7 @@ function App() {
 
     socket.onerror = () => {
       if (socket === socketRef.current) {
-        setError("Could not connect to Deriv. Check the app ID and try again.");
+        setError("Could not connect to Deriv. Check your network and try again.");
       }
     };
 
@@ -310,11 +303,7 @@ function App() {
           <span className="section-index">01</span>
           <div>
             <h2>Market data connection</h2>
-            <p>
-              {ENVIRONMENT_APP_ID
-                ? "Select a market and connect to live data."
-                : "Configure VITE_DERIV_APP_ID to enable live data."}
-            </p>
+            <p>Select a market and connect to live data.</p>
           </div>
         </div>
         <div className="controls">
@@ -338,7 +327,6 @@ function App() {
             <button
               className="button button-primary"
               onClick={connect}
-              disabled={!ENVIRONMENT_APP_ID}
             >
               Connect <span aria-hidden="true">→</span>
             </button>
