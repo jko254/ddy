@@ -44,7 +44,9 @@ const CANDLE_INTERVALS: { value: CandleGranularity; label: string }[] = [
 ];
 
 function App() {
-  const [appId, setAppId] = useState("");
+  const [appId, setAppId] = useState(
+    () => import.meta.env.VITE_DERIV_APP_ID?.trim() ?? "",
+  );
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
   const [symbols, setSymbols] = useState<ActiveSymbol[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState("");
