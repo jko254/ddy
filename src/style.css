@@ -67,6 +67,8 @@ h2 { color: #e2e8ed; font: 500 14px var(--display); letter-spacing: -.01em; }
 .app-id-field { flex: 1; }
 .symbol-field { flex: 1.1; }
 .field input, .field select { width: 100%; height: 39px; padding: 0 11px; color: #dce4e9; background: #0c131a; border: 1px solid #293744; border-radius: 5px; outline: none; font-size: 11px; }
+.configured-app-id { display: flex; align-items: center; gap: 8px; width: 100%; height: 39px; padding: 0 11px; color: #9bb0a8; background: #0c131a; border: 1px solid #293744; border-radius: 5px; font-size: 11px; }
+.configured-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px rgba(85, 230, 189, .35); }
 .field input:focus, .field select:focus { border-color: #3a9d87; box-shadow: 0 0 0 2px rgba(85, 230, 189, .08); }
 .field input::placeholder { color: #5c6974; }
 .field select:disabled, .field input:disabled { opacity: .65; cursor: not-allowed; }

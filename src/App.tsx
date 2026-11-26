@@ -42,11 +42,10 @@ const CANDLE_INTERVALS: { value: CandleGranularity; label: string }[] = [
   { value: 300, label: "5 minutes" },
   { value: 900, label: "15 minutes" },
 ];
+const ENVIRONMENT_APP_ID = import.meta.env.VITE_DERIV_APP_ID?.trim() ?? "";
 
 function App() {
-  const [appId, setAppId] = useState(
-    () => import.meta.env.VITE_DERIV_APP_ID?.trim() ?? "",
-  );
+  const [appId, setAppId] = useState(() => ENVIRONMENT_APP_ID);
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
   const [symbols, setSymbols] = useState<ActiveSymbol[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState("");
@@ -337,23 +336,37 @@ function App() {
           <span className="section-index">01</span>
           <div>
             <h2>Market data connection</h2>
-            <p>Connect with an app ID to load available symbols and live ticks.</p>
+            <p>
+              {ENVIRONMENT_APP_ID
+                ? "The application ID is configured and ready to use."
+                : "Connect with an app ID to load available symbols and live ticks."}
+            </p>
           </div>
         </div>
         <div className="controls">
-          <label className="field app-id-field">
-            <span>DERIV APP ID</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              autoComplete="off"
-              value={appId}
-              onChange={(event) => setAppId(event.target.value)}
-              placeholder="Enter application ID"
-              aria-label="Deriv application ID"
-              disabled={status !== "disconnected"}
-            />
-          </label>
+          {ENVIRONMENT_APP_ID ? (
+            <div className="field app-id-field">
+              <span>DERIV APP ID</span>
+              <div className="configured-app-id" aria-label="Deriv application ID configured">
+                <span className="configured-dot" aria-hidden="true" />
+                Configured via environment
+              </div>
+            </div>
+          ) : (
+            <label className="field app-id-field">
+              <span>DERIV APP ID</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                value={appId}
+                onChange={(event) => setAppId(event.target.value)}
+                placeholder="Enter application ID"
+                aria-label="Deriv application ID"
+                disabled={status !== "disconnected"}
+              />
+            </label>
+          )}
           <label className="field symbol-field">
             <span>MARKET SYMBOL</span>
             <select
