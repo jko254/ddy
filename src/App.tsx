@@ -293,32 +293,10 @@ function App() {
 
   return (
     <main className="app-shell">
-      <header className="topbar">
-        <a className="brand" href="/" aria-label="Tickscope home">
-          <span className="brand-mark">T</span>
-          <span>TICKSCOPE</span>
-        </a>
-        <div className="topbar-right">
-          <span className="mode-pill"><span /> READ ONLY</span>
-          <a
-            className="docs-link"
-            href="https://developers.deriv.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            API docs ↗
-          </a>
-        </div>
-      </header>
-
       <section className="intro">
-        <div className="eyebrow"><span className="eyebrow-line" /> MARKET INTELLIGENCE</div>
         <div className="intro-row">
           <div>
             <h1>Rise / Fall <span>Monitor</span></h1>
-            <p className="subtitle">
-              Deriv OHLC candles and live ticks for directional momentum. No trades, ever.
-            </p>
           </div>
           <div className={`connection ${status}`}>
             <span className="connection-dot" />
@@ -338,21 +316,13 @@ function App() {
             <h2>Market data connection</h2>
             <p>
               {ENVIRONMENT_APP_ID
-                ? "The application ID is configured and ready to use."
-                : "Connect with an app ID to load available symbols and live ticks."}
+                ? "Select a market and connect to live data."
+                : "Enter an app ID to load available symbols and live ticks."}
             </p>
           </div>
         </div>
         <div className="controls">
-          {ENVIRONMENT_APP_ID ? (
-            <div className="field app-id-field">
-              <span>DERIV APP ID</span>
-              <div className="configured-app-id" aria-label="Deriv application ID configured">
-                <span className="configured-dot" aria-hidden="true" />
-                Configured via environment
-              </div>
-            </div>
-          ) : (
+          {!ENVIRONMENT_APP_ID && (
             <label className="field app-id-field">
               <span>DERIV APP ID</span>
               <input
@@ -394,9 +364,6 @@ function App() {
           )}
         </div>
         {error && <div className="error-message" role="alert">{error}</div>}
-        <p className="privacy-note">
-          App ID only; do not enter a password or account token. This dashboard uses public market-data endpoints.
-        </p>
       </section>
 
       <section className="market-grid">
@@ -528,7 +495,6 @@ function App() {
       </section>
 
       <footer className="disclaimer">
-        <span>DATA &amp; ANALYSIS ONLY</span>
         <p>
           Tickscope does not execute trades or guarantee outcomes. Historical and live momentum
           measures are informational and should not be treated as financial advice.
